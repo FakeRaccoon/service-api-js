@@ -61,7 +61,7 @@ const login = async (req, res) => {
 };
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1w" });
 }
 
 const logout = async (req, res) => {
@@ -69,9 +69,9 @@ const logout = async (req, res) => {
     const refreshToken = req.body.token;
     if (!refreshToken)
       return res.status(400).json({ message: "Please include token" });
-    if (!(await TokenModel.findOne({ token: refreshToken })))
+    if (!(await Token.findOne({ token: refreshToken })))
       return res.status(400).json({ message: "Cant find token" });
-    await TokenModel.findOneAndRemove({ token: refreshToken });
+    await Token.destroy({ where: { token: refreshToken } });
     return res.json({ message: "Logged Out" });
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -80,7 +80,7 @@ const logout = async (req, res) => {
 
 const logoutAll = async (req, res) => {
   try {
-    await TokenModel.deleteMany();
+    await Token.destroy({where: {}});
     return res.json({ message: "Removed All Token" });
   } catch (err) {
     return res.status(500).json({ message: err.message });

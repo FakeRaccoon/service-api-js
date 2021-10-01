@@ -4,6 +4,7 @@ const { Op } = require("sequelize");
 
 const getItem = async (req, res) => {
   try {
+    const where = {};
     const search = req.query.search;
     if (search) {
       const part = await Item.findAll({

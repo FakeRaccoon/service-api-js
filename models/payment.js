@@ -8,6 +8,9 @@ const Payment = db.define(
     reapair_fee: {
       type: DataTypes.INTEGER,
     },
+    dp: {
+      type: DataTypes.INTEGER,
+    },
     type: {
       type: DataTypes.STRING,
     },

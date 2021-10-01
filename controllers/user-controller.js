@@ -19,7 +19,11 @@ const addRole = async (req, res) => {
 const authCheck = async (req, res) => {
   try {
     const username = req.user.username;
-    const user = await User.findOne({ where: { username: username } });
+    const user = await User.findOne({ 
+      include: [{ model: Role }], 
+      where: { username: username }, 
+      attributes: { exclude: ['password', 'role_id']} 
+    });
 
     if (user) return res.status(200).json({ result: user });
 
