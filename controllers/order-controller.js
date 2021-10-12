@@ -60,26 +60,27 @@ const getOrder = async (req, res) => {
 const createOrder = async (req, res) => {
   try {
     const { item_id, customer_id, name, address, contact } = req.body;
-    if (!customer_id) {
-      const user = await Custom.create({
-        name: name,
-        address: address,
-        contact: contact,
-      });
+    if (customer_id) {
       const order = await Order.create({
         status: 0,
         item_id: item_id,
-        customer_id: user.id,
+        customer_id: customer_id,
         created_at: isoDateTime,
       });
       return res.status(200).json({ result: order });
     }
+    const user = await Custom.create({
+      name: name,
+      address: address,
+      contact: contact,
+    });
     const order = await Order.create({
       status: 0,
       item_id: item_id,
-      customer_id: customer_id,
+      customer_id: user.id,
       created_at: isoDateTime,
     });
+    await Payment.create({ order_id: order.id });
     return res.status(200).json({ result: order });
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -89,16 +90,29 @@ const createOrder = async (req, res) => {
 const updateOrder = async (req, res) => {
   try {
     const id = req.params.id;
-    const { estimated_date, problem, status } = req.body;
-    const update = await Order.update({
-       estimated_date: estimated_date, 
-       problem: problem, 
-       status: status,
-       updated_at: isoDateTime
-      }, {
-      where: { id: id }
-    });
-    return res.status(200).json({ message: 'Data Updated' });
+    const { estimated_date, problem, status, repair_fee, dp, type } = req.body;
+    await Order.update(
+      {
+        estimated_date: estimated_date,
+        problem: problem,
+        status: status,
+        updated_at: isoDateTime,
+      },
+      {
+        where: { id: id },
+      }
+    );
+    await Payment.update(
+      {
+        repair_fee: repair_fee,
+        dp: dp,
+        type: type,
+      },
+      {
+        where: { order_id: id },
+      }
+    );
+    return res.status(200).json({ message: "Data Updated" });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

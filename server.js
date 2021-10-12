@@ -1,3 +1,4 @@
+const formData = require('express-form-data')
 const express = require("express");
 const connection = require("./databases/db");
 const route = require('./routes/routes');
@@ -7,6 +8,7 @@ require('dotenv').config()
 
 const app = express();
 
+app.use(formData.parse())
 app.use(cors())
 app.use(express.json());
 app.use( express.urlencoded({ extended: true }));

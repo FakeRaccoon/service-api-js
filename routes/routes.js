@@ -25,7 +25,7 @@ route.post("/auth/logout", logout);
 route.post("/auth/purge", logoutAll);
 
 route.get("/users/detail", auth, authCheck);
-route.get("/users", getUser);
+route.get("/users", getUser);  
 route.post("/users/role", addRole);
 
 route.get("/parts/:item", auth, getPart);

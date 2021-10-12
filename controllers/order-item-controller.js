@@ -41,9 +41,10 @@ const updateOrderItem = async (req, res) => {
 const deleteOrderItem = async (req, res) => {
   try {
     const id = req.params.id;
-    await OrderItem.destroy({
+    const order = await OrderItem.findOne({
       where: { id: id },
     });
+    order.destroy();
     return res.status(200).json({ message: "Data Deleted" });
   } catch (err) {
     return res.status(500).json({ message: err.message });
