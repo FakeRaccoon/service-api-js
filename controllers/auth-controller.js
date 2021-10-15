@@ -42,11 +42,8 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid user credential" });
     }
 
-    const token = generateAccessToken({ username: user.username });
-    const refreshToken = jwt.sign(
-      { username: user.username },
-      process.env.REFRESH_TOKEN_SECRET
-    );
+    const token = generateAccessToken({ id: user.id, username: user.username });
+    const refreshToken = jwt.sign({ id: user.id, username: user.username }, process.env.REFRESH_TOKEN_SECRET);
 
     await Token.create({ token: refreshToken });
 
@@ -98,16 +95,16 @@ const getToken = async (req, res) => {
 
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
     if (err) return res.sendStatus(403);
-    const token = generateAccessToken({ username: user.username });
+    const token = generateAccessToken({ id: user.id, username: user.username });
     const decoded = jwt.decode(token);
     const date = new Date(decoded.iat * 1000);
     const exp = new Date(decoded.exp * 1000);
     res.json({
       token: token,
-      generationTime: date.toLocaleString("en-US", {
+      generateAt: date.toLocaleString("en-US", {
         timeZone: "Asia/Jakarta",
       }),
-      expiresIn: exp.toLocaleString("en-US", { timeZone: "Asia/Jakarta" }),
+      expiresAt: exp.toLocaleString("en-US", { timeZone: "Asia/Jakarta" }),
     });
   });
 };

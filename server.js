@@ -2,7 +2,7 @@ const formData = require('express-form-data')
 const express = require("express");
 const connection = require("./databases/db");
 const route = require('./routes/routes');
-// const cron = require('./cron-job');
+// require('./cron-job');
 const cors = require('cors')
 require('dotenv').config()
 
@@ -16,7 +16,7 @@ app.use(route)
 
 app.get("/", (req, res) => {
     res.send("Service API");
-  });
+});
 
 async function connect() {
   try {

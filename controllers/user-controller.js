@@ -39,14 +39,14 @@ const getUser = async (req, res) => {
     if (username) {
       const user = await User.findOne({
         include: [{ model: Role }],
-        attributes: { exclude: ["role_id"] },
+        attributes: { exclude: ['password', 'role_id']},
         where: { username: username }
       });
       return res.status(200).json({ result: user });     
     }
     const user = await User.findAll({
       include: [{ model: Role }],
-      attributes: { exclude: ["role_id"] },
+      attributes: { exclude: ['password', 'role_id']}
     });
     return res.status(200).json({ result: user });
   } catch (err) {

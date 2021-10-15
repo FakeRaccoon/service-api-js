@@ -18,8 +18,10 @@
     "express-form-data": "^2.0.17",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.0",
-    "nodemon": "^2.0.12",
     "request": "^2.88.2",
     "sequelize": "^6.6.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13"
   }
 }
