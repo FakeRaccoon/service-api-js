@@ -15,11 +15,11 @@ const getItem = async (req, res) => {
             { item_code: { [Op.like]: `%${search}%` } },
           ],
         },
-        limit: 10,
+        limit: 5,
       });
       return res.status(200).json({ result: part });
     } else {
-      const part = await Item.findAll({ limit: 10 });
+      const part = await Item.findAll({ limit: 5 });
       return res.status(200).json({ result: part });
     }
   } catch (err) {

@@ -37,7 +37,7 @@ const getOrder = async (req, res) => {
           { model: Payment, attributes: ["repair_fee", "dp", "type"] },
         ],
         attributes: { exclude: ["customer_id", "item_id"] },
-        where: { id: id },
+        where: { id: id }
       });
       return res.status(200).json({ result: user });
     }
@@ -48,8 +48,9 @@ const getOrder = async (req, res) => {
       ],
       attributes: { exclude: ["customer_id", "item_id"] },
       where: status ? { status: status } : null,
+      order: [['id', 'DESC']],
       limit: limit,
-      offset: offset,
+      offset: offset
     });
     return res.status(200).json({ result: rows });
   } catch (err) {
