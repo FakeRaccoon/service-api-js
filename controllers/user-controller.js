@@ -1,6 +1,6 @@
 const User = require("../models/user");
 const Role = require("../models/role");
-const Token = require('../models/token');
+const Token = require("../models/token");
 const RoleRelation = User.belongsTo(Role, { foreignKey: "role_id" });
 
 const addRole = async (req, res) => {
@@ -19,15 +19,15 @@ const addRole = async (req, res) => {
 const authCheck = async (req, res) => {
   try {
     const username = req.user.username;
-    const user = await User.findOne({ 
-      include: [{ model: Role }], 
-      where: { username: username }, 
-      attributes: { exclude: ['password', 'role_id']} 
+    const user = await User.findOne({
+      include: [{ model: Role }],
+      where: { username: username },
+      attributes: { exclude: ["password", "role_id"] },
     });
 
-    if (user) return res.status(200).json({ result: user });
+    return res.status(200).json({ result: user });
 
-    return res.status(400).json({ message: "Invalid user credential" });
+    // return res.status(400).json({ message: "Invalid user credential" });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -39,14 +39,14 @@ const getUser = async (req, res) => {
     if (username) {
       const user = await User.findOne({
         include: [{ model: Role }],
-        attributes: { exclude: ['password', 'role_id']},
-        where: { username: username }
+        attributes: { exclude: ["password", "role_id"] },
+        where: { username: username },
       });
-      return res.status(200).json({ result: user });     
+      return res.status(200).json({ result: user });
     }
     const user = await User.findAll({
       include: [{ model: Role }],
-      attributes: { exclude: ['password', 'role_id']}
+      attributes: { exclude: ["password", "role_id"] },
     });
     return res.status(200).json({ result: user });
   } catch (err) {
