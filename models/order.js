@@ -6,19 +6,24 @@ const Order = db.define(
   "orders",
   {
     item_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.INTEGER
     },
     problem: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
     },
     status: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+    },
+    manual_item: {
+      type: DataTypes.STRING
+    },
+    condition: {
+      type: DataTypes.STRING
     },
     customer_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     estimated_date: {
       type: DataTypes.DATE,

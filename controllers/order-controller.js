@@ -4,18 +4,17 @@ const Item = require("../models/item");
 const Order = require("../models/order");
 const Payment = require("../models/payment");
 
+const { Op } = require("sequelize");
+
 const Customer = Order.belongsTo(Custom, { foreignKey: "customer_id" });
 const OrderItems = Order.hasMany(OrderItem, { foreignKey: "order_id" });
 const itemRelation = Order.belongsTo(Item, { foreignKey: "item_id" });
 const orderItemRelation = OrderItem.belongsTo(Item, { foreignKey: "item_id" });
 const Payments = Order.hasOne(Payment, { foreignKey: "order_id" });
 
-const start = new Date();
-var isoDateTime = new Date(start.getTime() - start.getTimezoneOffset() * 60000);
-
 const getOrder = async (req, res) => {
   try {
-    const { page, status } = req.query;
+    const { page, fromStatus, toStatus } = req.query;
     const id = req.params.id;
     let limit = 10;
     let offset = 0;
@@ -37,7 +36,7 @@ const getOrder = async (req, res) => {
           { model: Payment, attributes: ["repair_fee", "dp", "type"] },
         ],
         attributes: { exclude: ["customer_id", "item_id"] },
-        where: { id: id }
+        where: { id: id },
       });
       return res.status(200).json({ result: user });
     }
@@ -47,10 +46,12 @@ const getOrder = async (req, res) => {
         { model: Item },
       ],
       attributes: { exclude: ["customer_id", "item_id"] },
-      where: status ? { status: status } : null,
-      order: [['id', 'DESC']],
+      where: fromStatus
+        ? { status: { [Op.between]: [fromStatus, toStatus] } }
+        : null,
+      order: [["id", "DESC"]],
       limit: limit,
-      offset: offset
+      offset: offset,
     });
     return res.status(200).json({ result: rows });
   } catch (err) {
@@ -59,8 +60,10 @@ const getOrder = async (req, res) => {
 };
 
 const createOrder = async (req, res) => {
+  const start = new Date();
+  var isoDateTime = new Date(start.getTime() - start.getTimezoneOffset() * 60000);
   try {
-    const { item_id, customer_id, name, address, contact } = req.body;
+    const { item_id, customer_id, name, address, contact, condition, manual_item } = req.body;
     if (customer_id) {
       const order = await Order.create({
         status: 0,
@@ -78,6 +81,8 @@ const createOrder = async (req, res) => {
     const order = await Order.create({
       status: 0,
       item_id: item_id,
+      manual_item: manual_item,
+      condition: condition,
       customer_id: user.id,
       created_at: isoDateTime,
     });
@@ -89,6 +94,8 @@ const createOrder = async (req, res) => {
 };
 
 const updateOrder = async (req, res) => {
+  const start = new Date();
+  var isoDateTime = new Date(start.getTime() - start.getTimezoneOffset() * 60000);
   try {
     const id = req.params.id;
     const { estimated_date, problem, status, repair_fee, dp, type } = req.body;

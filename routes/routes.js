@@ -8,6 +8,7 @@ const { addRole, getUser, authCheck } = require("../controllers/user-controller"
 const { getPart, getFromHeroku } = require('../controllers/part-controller');
 const { getItem } = require('../controllers/item-controller');
 const { login, register, getToken, logout, logoutAll } = require('../controllers/auth-controller');
+const { update } = require('../controllers/payment-controller');
 
 route.get("/orders", auth, getOrder);
 route.post("/orders", auth, createOrder);
@@ -17,6 +18,8 @@ route.put("/orders/:id", auth, updateOrder);
 route.post("/order-items", auth, createOrderItem);
 route.put("/order-items/:id", auth, updateOrderItem);
 route.delete("/order-items/:id", auth, deleteOrderItem);
+
+route.put("/payment/:id", auth, update);
 
 route.post("/auth/register", register);
 route.post("/auth/login", login);
