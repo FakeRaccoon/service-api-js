@@ -20,8 +20,8 @@ const cron = new CronJob("*/1 * * * *", async function () {
         await Cache.update({ etag: response.headers['etag'] }, { where: { id: 1 } })
         const data = JSON.parse(body) 
         data.forEach(async function (element) {
-           await Item.findOrCreate({ where: { id: element.itemId }, defaults: {
-            id: element.itemId,
+           await Item.findOrCreate({ where: { atana_id: element.itemId }, defaults: {
+            atana_id: element.itemId,
             item_code: element.itemCode,
             item_name: element.itemName,
             item_alias: element.itemAlias,

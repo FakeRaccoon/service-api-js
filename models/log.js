@@ -2,26 +2,20 @@ const { Sequelize } = require("sequelize");
 const { DataTypes } = Sequelize;
 const db = require("../databases/db");
 
-const Item = db.define(
-  "items",
+const Log = db.define(
+  "logs",
   {
-    atana_id: {
+    user_id: {
       type: DataTypes.INTEGER,
     },
-    item_code: {
+    log: {
       type: DataTypes.STRING,
     },
-    item_name: {
-      type: DataTypes.STRING,
-    },
-    item_alias: {
-      type: DataTypes.STRING,
-    },
-    updated_at: {
+    created_at: {
       type: DataTypes.DATE,
     },
   },
   { freezeTableName: true }
 );
 
-module.exports = Item;
+module.exports = Log;

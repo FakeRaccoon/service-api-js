@@ -60,9 +60,9 @@ const getOrder = async (req, res) => {
 };
 
 const createOrder = async (req, res) => {
-  const start = new Date();
-  var isoDateTime = new Date(start.getTime() - start.getTimezoneOffset() * 60000);
-  try {
+  try { 
+    const start = new Date();
+    var isoDateTime = new Date(start.getTime() - start.getTimezoneOffset() * 60000);
     const { item_id, customer_id, name, address, contact, condition, manual_item } = req.body;
     if (customer_id) {
       const order = await Order.create({
@@ -77,6 +77,7 @@ const createOrder = async (req, res) => {
       name: name,
       address: address,
       contact: contact,
+      created_at: isoDateTime,
     });
     const order = await Order.create({
       status: 0,

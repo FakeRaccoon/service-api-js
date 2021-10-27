@@ -8,7 +8,7 @@ const getPart = async (req, res) => {
       url: "http://192.168.0.250:4948/api/Items/ProductDropDown",
       headers: {
         "Authorization": `Bearer ${process.env.AMS_TOKEN}`,
-        "search": item || 'diesel'
+        "search": item || 'yanmar'
       }
     };
     request(options, function (error, response, body) {
