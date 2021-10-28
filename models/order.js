@@ -15,9 +15,6 @@ const Order = db.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    manual_item: {
-      type: DataTypes.STRING
-    },
     condition: {
       type: DataTypes.STRING
     },

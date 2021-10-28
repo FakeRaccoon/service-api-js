@@ -63,32 +63,65 @@ const createOrder = async (req, res) => {
   try { 
     const start = new Date();
     var isoDateTime = new Date(start.getTime() - start.getTimezoneOffset() * 60000);
-    const { item_id, customer_id, name, address, contact, condition, manual_item } = req.body;
-    if (customer_id) {
+    const { item_id, customer_id, name, address, contact, condition, item_name } = req.body;
+    if (customer_id && item_id) {
       const order = await Order.create({
         status: 0,
         item_id: item_id,
+        condition: condition,
         customer_id: customer_id,
         created_at: isoDateTime,
       });
+      await Payment.create({ order_id: order.id });
       return res.status(200).json({ result: order });
     }
-    const user = await Custom.create({
-      name: name,
-      address: address,
-      contact: contact,
-      created_at: isoDateTime,
-    });
-    const order = await Order.create({
-      status: 0,
-      item_id: item_id,
-      manual_item: manual_item,
-      condition: condition,
-      customer_id: user.id,
-      created_at: isoDateTime,
-    });
-    await Payment.create({ order_id: order.id });
-    return res.status(200).json({ result: order });
+    if (!customer_id && !item_id) {
+      const item = await Item.create({ item_name: item_name, updated_at: isoDateTime });
+      const user = await Custom.create({
+        name: name,
+        address: address,
+        contact: contact,
+        created_at: isoDateTime,
+      });
+      const order = await Order.create({
+        status: 0,
+        item_id: item.id,
+        condition: condition,
+        customer_id: user.id,
+        created_at: isoDateTime,
+      });
+      await Payment.create({ order_id: order.id });
+      return res.status(200).json({ result: order });
+    }
+    if (customer_id && !item_id) {
+      const item = await Item.create({ item_name: item_name, updated_at: isoDateTime });
+      const order = await Order.create({
+       status: 0,
+       item_id: item.id,
+       condition: condition,
+       customer_id: customer_id,
+       created_at: isoDateTime,
+     });
+     await Payment.create({ order_id: order.id });
+     return res.status(200).json({ result: order });
+    }
+    if (!customer_id && item_id) {
+      const user = await Custom.create({
+        name: name,
+        address: address,
+        contact: contact,
+        created_at: isoDateTime,
+      });
+      const order = await Order.create({
+       status: 0,
+       item_id: item_id,
+       condition: condition,
+       customer_id: user.id,
+       created_at: isoDateTime,
+     });
+     await Payment.create({ order_id: order.id });
+     return res.status(200).json({ result: order });
+    }
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
